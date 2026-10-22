@@ -1,0 +1,19 @@
+{
+    "name": "xzwords",
+    "productName":  "xz背单词",
+    "version":  "1.0.0",
+    "description":  "xz背单词 —— 开源离线桌面背单词：FSRS/艾宾浩斯双算法 + 轮播/选题浮窗/贴纸插件",
+    "main":  "main.js",
+    "author":  "local",
+    "license":  "MIT",
+    "scripts":  {
+                    "start":  "electron .",
+                    "test":  "node test/run.js",
+                    "dist":  "electron-builder --win portable",
+                    "icon":  "node scripts/gen-icon.js"
+                },
+    "devDependencies":  {
+                            "electron":  "^44.9.1",
+                            "electron-builder":  "^26.15.3"
+                        }
+}

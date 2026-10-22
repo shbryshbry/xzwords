@@ -1,0 +1,28 @@
+appId: com.xz.english
+productName: xz背单词
+copyright: 本地单机复刻版
+directories:
+  output: release
+  buildResources: build
+asar: true
+compression: normal
+electronLanguages:
+  - zh-CN
+  - en-US
+files:
+  - package.json
+  - main.js
+  - preload.js
+  - lib/**/*
+  - renderer/**/*
+  - widgets/**/*
+  - assets/**/*
+win:
+  target:
+    - target: portable
+      arch:
+        - x64
+  icon: build/icon.png
+  artifactName: ${productName}-${version}-portable.exe
+portable:
+  artifactName: ${productName}-${version}-portable.exe

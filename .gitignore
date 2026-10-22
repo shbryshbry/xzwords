@@ -1,0 +1,17 @@
+# 依赖与构建产物
+node_modules/
+release/
+stage/
+
+# 日志与临时文件
+*.log
+smoke-*.txt
+build-log*.txt
+diag.txt
+marker.txt
+electron-version.txt
+momo-main.log
+
+# 系统文件
+.DS_Store
+Thumbs.db

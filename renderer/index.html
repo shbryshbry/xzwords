@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;">
+  <title>xz背单词</title>
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <aside id="sidebar">
+    <div class="logo">
+      <img class="logo-mark" src="../assets/icon.png" alt="xz">
+      <div class="logo-text"><b>xz背单词</b><span>单机版</span></div>
+    </div>
+    <nav id="nav">
+      <a data-route="home">📚 我的词库</a>
+      <a data-route="learn">🎯 开始学习 <i id="nav-due" class="nav-badge" hidden></i></a>
+      <a data-route="forecast">👀 复习预览</a>
+      <a data-route="stats">📊 学习统计</a>
+      <a data-route="widgets">🧩 桌面插件</a>
+      <a data-route="known">🌍 全局熟词</a>
+      <a data-route="settings">⚙️ 设置</a>
+    </nav>
+    <div class="sidebar-foot">
+      <button class="btn ghost small" id="btn-tray-tip">提示：关闭窗口即缩到托盘</button>
+    </div>
+  </aside>
+  <main id="main">
+    <div id="view"></div>
+  </main>
+  <div id="modal-root"></div>
+  <div id="toasts"></div>
+  <div id="ctx-menu" hidden></div>
+  <script src="../lib/srs.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/views.js"></script>
+  <script src="js/book.js"></script>
+  <script src="js/learn.js"></script>
+  <script src="js/boot.js"></script>
+</body>
+</html>

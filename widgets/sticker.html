@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;">
+<title>桌面贴纸</title>
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; background: transparent; overflow: hidden; user-select: none; }
+  #card {
+    margin: 7px; height: calc(100% - 14px); border-radius: 14px; position: relative; overflow: hidden;
+    box-shadow: 0 10px 30px rgba(30, 30, 40, .32), 0 0 0 1px rgba(0,0,0,.05) inset;
+    display: flex; flex-direction: column;
+    font-family: "Segoe UI", "Microsoft YaHei", sans-serif;
+    -webkit-app-region: drag;
+  }
+  .st-yellow { background: linear-gradient(170deg, #fff9d6, #fff3ad); color: #4a3f10; }
+  .st-green { background: linear-gradient(170deg, #e2fbee, #c9f2dd); color: #0a4a2e; }
+  .st-blue { background: linear-gradient(170deg, #e3efff, #cfe4ff); color: #123a6b; }
+  .st-pink { background: linear-gradient(170deg, #ffe9f3, #ffd3e6); color: #6b1240; }
+  .st-dark { background: linear-gradient(170deg, #2b3040, #23283a); color: #ecf0f8; }
+  /* 顶栏：拖动条 */
+  #titlebar {
+    height: 26px; flex: none; display: flex; align-items: center;
+    padding: 0 6px 0 12px; -webkit-app-region: drag;
+    background: rgba(0,0,0,.07);
+  }
+  .st-dark #titlebar { background: rgba(255,255,255,.06); }
+  #s-space { font-size: 10.5px; opacity: .6; margin-right: auto; letter-spacing: 1px; }
+  #s-close {
+    border: none; background: transparent; color: inherit; opacity: .55;
+    border-radius: 6px; cursor: pointer; font-size: 11px; width: 20px; height: 18px; line-height: 1;
+    -webkit-app-region: no-drag; transition: all .15s;
+  }
+  #s-close:hover { opacity: 1; background: rgba(214,69,69,.85); color: #fff; }
+  /* 内容 */
+  #body { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 2px 16px 0; -webkit-app-region: no-drag; }
+  #word { font-size: 22px; font-weight: 800; letter-spacing: .4px; cursor: pointer; line-height: 1.25; }
+  #word:hover { text-decoration: underline; text-decoration-color: rgba(127,127,127,.4); }
+  #phon { font-size: 11.5px; opacity: .7; margin-top: 3px; }
+  #trans { font-size: 13.5px; margin-top: 7px; line-height: 1.5; opacity: .92; }
+  /* 底栏 */
+  #foot {
+    flex: none; display: flex; gap: 7px; -webkit-app-region: no-drag; align-items: center;
+    padding: 7px 12px 9px; border-top: 1px solid rgba(0,0,0,.08);
+  }
+  .st-dark #foot { border-top-color: rgba(255,255,255,.1); }
+  .fbtn {
+    width: 26px; height: 26px; border-radius: 50%; border: none; cursor: pointer;
+    background: rgba(120, 120, 120, .14); color: inherit; font-size: 12px; padding: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: background .15s, transform .1s;
+  }
+  .fbtn:hover { background: rgba(120, 120, 120, .3); transform: translateY(-1px); }
+  #grip {
+    position: fixed; right: 3px; bottom: 3px; width: 16px; height: 16px; z-index: 90;
+    cursor: nwse-resize; opacity: .45; color: inherit;
+    font-size: 12px; line-height: 14px; text-align: center; font-family: monospace;
+  }
+  #grip:hover { opacity: 1; }
+  #menu {
+    position: fixed; background: #fff; color: #23272e; border: 1px solid #e6e9f2;
+    border-radius: 9px; box-shadow: 0 8px 30px rgba(0,0,0,.18); padding: 4px; z-index: 99;
+    min-width: 130px; -webkit-app-region: no-drag;
+  }
+  #menu div { padding: 7px 13px; border-radius: 6px; cursor: pointer; font-size: 12.5px; }
+  #menu div:hover { background: #f0f3fa; }
+  #menu div.danger { color: #d64545; }
+</style>
+</head>
+<body>
+<div id="card">
+  <div id="titlebar">
+    <span id="s-space"></span>
+    <button id="s-close" title="删除贴纸">✕</button>
+  </div>
+  <div id="body">
+    <div id="word">…</div>
+    <div id="phon"></div>
+    <div id="trans"></div>
+  </div>
+  <div id="foot">
+    <button class="fbtn" id="s-speak" title="发音">🔊</button>
+    <button class="fbtn" id="s-prev" title="上一个词">‹</button>
+    <button class="fbtn" id="s-next" title="下一个词">›</button>
+  </div>
+</div>
+<div id="grip" title="拖动调整大小">⋰</div>
+<div id="menu" hidden></div>
+<script src="sticker.js"></script>
+</body>
+</html>

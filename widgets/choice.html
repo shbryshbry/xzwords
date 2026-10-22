@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;">
+<title>选题浮窗</title>
+<style>
+  html, body { margin: 0; padding: 0; height: 100%; background: transparent; overflow: hidden; user-select: none; }
+  #card {
+    margin: 10px; height: calc(100% - 20px); border-radius: 16px; position: relative; overflow: hidden;
+    background: linear-gradient(165deg, #fdfdff 0%, #eef2fc 100%);
+    box-shadow: 0 12px 40px rgba(20, 30, 60, .38), 0 0 0 1px rgba(255,255,255,.6) inset;
+    display: flex; flex-direction: column; padding: 0 14px 12px;
+    font-family: "Segoe UI", "Microsoft YaHei", sans-serif; color: #23272e;
+    -webkit-app-region: drag;
+  }
+  #accent {
+    position: absolute; top: 0; left: 0; right: 0; height: 4px;
+    background: linear-gradient(90deg, #4f7cff, #00b578, #4f7cff);
+    background-size: 200% 100%; animation: flow 6s linear infinite;
+  }
+  @keyframes flow { from { background-position: 0 0; } to { background-position: 200% 0; } }
+  #head {
+    display: flex; align-items: center; gap: 6px; -webkit-app-region: drag;
+    margin: 6px -14px 4px; padding: 0 8px 0 12px; height: 34px;
+    background: rgba(90, 110, 150, .08); border-bottom: 1px solid rgba(90, 110, 150, .10);
+  }
+  #head .tag {
+    font-size: 11px; color: #fff; background: linear-gradient(135deg, #4f7cff, #6f9bff);
+    border-radius: 999px; padding: 3px 12px; letter-spacing: 1px;
+  }
+  #head .spacer { flex: 1; }
+  #head button {
+    border: none; background: rgba(90,110,150,.10); color: #5a6072; border-radius: 50%;
+    width: 24px; height: 24px; cursor: pointer; font-size: 11px; line-height: 1;
+    transition: all .15s; -webkit-app-region: no-drag;
+  }
+  #head button:hover { background: #f53f3f; color: #fff; transform: rotate(90deg); }
+  #word { font-size: 26px; font-weight: 800; margin-top: 8px; text-align: center; letter-spacing: .5px; color: #1a1f2e; }
+  #word .pos {
+    display: inline-block; vertical-align: 6px; margin-left: 8px;
+    font-size: 11px; font-weight: 700; color: #067a52;
+    background: rgba(0, 181, 120, .13); border: 1px solid rgba(0, 181, 120, .25);
+    border-radius: 999px; padding: 1px 9px; letter-spacing: 0;
+  }
+  #phon { font-size: 11.5px; color: #8890a8; text-align: center; margin-top: 3px; min-height: 14px; }
+  #opts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; -webkit-app-region: no-drag; }
+  .opt {
+    border: 1.5px solid #e3e8f4; border-radius: 12px; padding: 9px 10px; cursor: pointer;
+    font-size: 12.5px; background: rgba(255,255,255,.85); color: #23272e; line-height: 1.35; min-height: 46px;
+    display: flex; align-items: center; gap: 8px;
+    transition: all .15s; box-shadow: 0 1px 3px rgba(90,110,150,.06);
+  }
+  .opt:hover { border-color: #4f7cff; transform: translateY(-2px); box-shadow: 0 6px 14px rgba(79,124,255,.18); }
+  .opt .idx {
+    flex: none; width: 20px; height: 20px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 10.5px; font-weight: 800; color: #fff;
+  }
+  .idx0 { background: #4f7cff; } .idx1 { background: #00b578; }
+  .idx2 { background: #ff8f1f; } .idx3 { background: #8f4bff; }
+  .opt.correct {
+    border-color: #00b578; background: linear-gradient(135deg, #ecfaf3, #d9f7e8); color: #067a52;
+    animation: pop .3s;
+  }
+  .opt.correct .idx { background: #00b578; }
+  .opt.wrong {
+    border-color: #f53f3f; background: #fff2f2; color: #b91c1c;
+    animation: shake .35s;
+  }
+  .opt.wrong .idx { background: #f53f3f; }
+  .opt.dim { opacity: .45; }
+  @keyframes pop { 0% { transform: scale(1); } 50% { transform: scale(1.04); } 100% { transform: scale(1); } }
+  @keyframes shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+  #msg { min-height: 18px; font-size: 12px; text-align: center; margin-top: 8px; color: #7a8195; -webkit-app-region: no-drag; }
+  #msg .ok { color: #067a52; font-weight: 700; }
+  #msg .bad { color: #d64545; font-weight: 700; }
+  #foot {
+    margin-top: auto; display: flex; align-items: center; gap: 7px; -webkit-app-region: no-drag;
+    padding-top: 9px; border-top: 1px solid rgba(90, 110, 150, .13);
+  }
+  .fbtn {
+    width: 30px; height: 30px; border-radius: 50%; border: none; cursor: pointer;
+    background: rgba(90, 110, 150, .10); color: #4a5065; font-size: 13px; padding: 0;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: all .15s;
+  }
+  .fbtn:hover { background: rgba(90, 110, 150, .22); transform: translateY(-1px); }
+  .fbtn.on { background: rgba(79, 124, 255, .16); color: #2f5bd8; box-shadow: 0 0 0 1.5px rgba(79,124,255,.45) inset; }
+  .fbtn.text {
+    width: auto; border-radius: 999px; padding: 0 13px; font-size: 11.5px; font-family: inherit;
+    height: 28px; color: #5a6072;
+  }
+  .fbtn.text.on { background: rgba(0, 181, 120, .14); color: #067a52; font-weight: 700; }
+  .fbtn.text.on:hover { background: rgba(0, 181, 120, .26); }
+  #idx { margin-left: auto; font-size: 11px; color: #98a0b3; font-variant-numeric: tabular-nums; }
+  #grip {
+    position: fixed; right: 7px; bottom: 7px; width: 18px; height: 18px; z-index: 90;
+    cursor: nwse-resize; -webkit-app-region: no-drag; color: #a8b0c8;
+    font-size: 14px; line-height: 15px; text-align: center; font-family: monospace;
+  }
+  #grip:hover { color: #4f7cff; }
+</style>
+</head>
+<body>
+<div id="card">
+  <div id="accent"></div>
+  <div id="head">
+    <span class="tag">✅ 选题浮窗</span>
+    <span class="spacer"></span>
+    <button id="q-close" title="关闭">✕</button>
+  </div>
+  <div id="word">…</div>
+  <div id="phon"></div>
+  <div id="opts"></div>
+  <div id="msg"></div>
+  <div id="foot">
+    <button class="fbtn" id="q-speak" title="发音">🔊</button>
+    <button class="fbtn" id="q-skip" title="换一题 (回车)">⏭</button>
+    <button class="fbtn" id="q-kb" title="键盘答题">⌨</button>
+    <button class="fbtn text on" id="q-sync" title="答题结果计入复习计划">✓ 计入进度</button>
+    <span id="idx"></span>
+  </div>
+</div>
+<div id="grip" title="拖动调整大小">⋰</div>
+<script src="choice.js"></script>
+</body>
+</html>
