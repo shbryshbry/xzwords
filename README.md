@@ -58,7 +58,7 @@
 ## 🛠 从源码运行 / 开发
 
 ```bash
-git clone <本仓库地址>
+git clone https://github.com/shbryshbry/xzwords
 cd xzwords
 npm install        # 国内网络建议保留 .npmrc（npmmirror 镜像）
 npm start          # 启动开发版
